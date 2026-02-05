@@ -1,0 +1,12 @@
+﻿version: 1
+base:
+  upstream_dir: "upstream"
+  output_dir: "docs-ja"
+
+include:
+  - "creator/Documents/molang/**"
+exclude: []
+
+priorities:
+  p0: []
+  p1: []
