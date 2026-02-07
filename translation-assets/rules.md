@@ -9,7 +9,4 @@
 docs-ja の各ページ末尾に、以下のフッターを付与する。
 
 例:
----
 原文: https://github.com/MicrosoftDocs/minecraft-creator/blob/{SHA}/{PATH}
-ライセンス: CC BY 4.0
----

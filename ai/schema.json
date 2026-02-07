@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TranslationTask",
+  "type": "object",
+  "required": [
+    "source_path",
+    "source_sha",
+    "source_markdown",
+    "rules",
+    "style_guide",
+    "glossary",
+    "footer_template"
+  ],
+  "properties": {
+    "source_path": {
+      "type": "string",
+      "description": "Path relative to upstream root."
+    },
+    "source_sha": {
+      "type": "string",
+      "description": "Git SHA for upstream source."
+    },
+    "source_markdown": {
+      "type": "string",
+      "description": "Markdown content to translate."
+    },
+    "rules": {
+      "type": "string"
+    },
+    "style_guide": {
+      "type": "string"
+    },
+    "glossary": {
+      "type": "string"
+    },
+    "footer_template": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}
