@@ -1,0 +1,13 @@
+# Title translations dictionary (independent from targets.yml)
+# Map upstream-relative path -> title variants
+# Example:
+# - path: /creator/Documents/molang/introduction.md
+#   title_en: Getting Started with Add-on Development
+#   title_ja: アドオン開発入門
+entries:
+  - path: /creator/Documents/molang/introduction.md
+    title_ja: Molang 入門
+  - path: /creator/Documents/molang/practical-molang.md
+    title_ja: 実践 Molang
+  - path: /creator/Documents/molang/syntax-guide.md
+    title_ja: Molang 構文ガイド

@@ -1,0 +1,8 @@
+# List of translated documents (independent from targets.yml)
+# Each entry is the upstream-relative path of the source doc.
+# Example:
+# - /creator/Documents/molang/introduction.md
+translated:
+  - /creator/Documents/molang/introduction.md
+  - /creator/Documents/molang/practical-molang.md
+  - /creator/Documents/molang/syntax-guide.md
