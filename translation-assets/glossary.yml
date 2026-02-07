@@ -1,2 +1,46 @@
-﻿terms: []
-variants: []
+version: 1
+language: 
+  source: en
+  target: ja
+
+terms:
+  Minecraft: 
+    target: Minecraft
+    note: そのまま使用
+  Bedrock Edition: 
+    target: Bedrock Edition
+    note: そのまま使用
+  behavior pack: 
+    target: ビヘイビアパック
+  resource pack: 
+    target: リソースパック
+  add-on: 
+    target: アドオン
+    note: Minecraftのアドオンを指す場合に使用
+  mob: 
+    target: モブ
+    note: Minecraftのモブを指す場合に使用
+  entity: 
+    target: エンティティ
+    note: Minecraftのエンティティを指す場合に使用
+  molang: 
+    target: molang
+    note: そのまま使用
+  Molang expression:
+    target: Molang式
+    note: Molangで評価される式。例: `query.last_hit_by_player ? 1 : 0`
+  query:
+    target: クエリ
+    note: Molangのクエリオブジェクト。エンティティや状態を問い合わせるために使用。例: `query.life_time`
+  Molang function:
+    target: Molang関数
+    note: Molangで使用される組み込み関数群（例: `Math.Random`, `math.sin`）。関数名は原文のまま表記。
+  Animation controller:
+    target: アニメーションコントローラー
+    note: アニメーションの状態遷移やブレンドを制御するステートマシン。
+  Render controller:
+    target: レンダーコントローラー
+    note: 表示に使用するジオメトリやテクスチャ、マテリアルを選択する制御部。
+  Particle emitter:
+    target: パーティクルエミッター
+    note: パーティクル発生の設定。初期化時にMolangスクリプトが実行される場合がある。
