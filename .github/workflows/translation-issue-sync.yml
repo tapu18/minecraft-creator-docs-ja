@@ -63,8 +63,8 @@ jobs:
               await github.rest.issues.create({ owner, repo, title, body, labels });
             }
 
-            // 1) targets.yml 更新起因: 新たに対象になったドキュメントを1:1で issue
-            if (targetsChanged) {
+            // 1) 新規ドキュメントがある場合: 1:1で issue を作成
+            if (missing.length > 0) {
               for (const path of missing) {
                 const title = path; // パス表記
                 if (await issueExistsByTitle(title)) continue;
@@ -77,26 +77,17 @@ jobs:
                 await createIssue(title, body, ["new-doc"]);
               }
             }
-            else console.log("targets.yml not changed.");
+            else console.log("No new documents to translate.");
 
-            // 2) upstream 更新起因: 新規追加 + 既存翻訳更新をまとめて1 issue
-            if (upstreamChanged) {
+            // 2) 既存翻訳の更新がある場合: まとめて1 issue を作成
+            if (outdated.length > 0) {
               const title = `Update upstream: ${shortSha}`;
               if (!(await issueExistsByTitle(title))) {
                 const lines = [];
-                if (missing.length > 0) {
-                  lines.push("翻訳対象（新規）:");
-                  for (const p of missing) lines.push(`- \`${p}\``);
-                  lines.push("");
-                }
-                if (outdated.length > 0) {
-                  lines.push("翻訳対象（更新）:");
-                  for (const p of outdated) lines.push(`- \`${p}\``);
-                  lines.push("");
-                }
-                if (lines.length === 0) lines.push("翻訳対象: なし");
+                lines.push("翻訳対象（更新）:");
+                for (const p of outdated) lines.push(`- \`${p}\``);
 
                 await createIssue(title, lines.join("\n"), ["update"]);
               }
             }
-            else console.log("upstream not changed.");
+            else console.log("No outdated documents to update.");
