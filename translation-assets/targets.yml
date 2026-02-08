@@ -5,6 +5,7 @@ base:
 
 include:
   - "creator/Documents/molang/**"
+  - "creator/Documents/Fogs/**"
 exclude: []
 
 priorities:
