@@ -27,10 +27,12 @@ jobs:
           echo "changed<<EOF" >> $GITHUB_OUTPUT
           cat /tmp/changed.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          cat /tmp/changed.txt
 
       - name: Compute translation targets
         run: |
           python3 scripts/get-translate-target.py --json --out-file /tmp/targets.json
+          cat /tmp/targets.json
 
       - name: Create issues
         uses: actions/github-script@v7
@@ -76,6 +78,7 @@ jobs:
                 await createIssue(title, body, ["new-doc"]);
               }
             }
+            else echo "targets.yml not changed.";
 
             // 2) upstream 更新起因: 新規追加 + 既存翻訳更新をまとめて1 issue
             if (upstreamChanged) {
@@ -100,3 +103,4 @@ jobs:
                 await createIssue(title, lines.join("\n"), ["update"]);
               }
             }
+            else echo "upstream not changed.";
