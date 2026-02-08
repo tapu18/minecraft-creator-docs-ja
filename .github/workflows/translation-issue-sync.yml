@@ -7,6 +7,7 @@ on:
       - "upstream/**"
       - "translation-assets/targets.yml"
       - "scripts/get-translate-target.py"
+      - ".github/workflows/translation-issue-sync.yml"
 
 permissions:
   contents: read
