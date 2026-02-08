@@ -20,6 +20,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: true
 
       - name: Detect changed files
         id: diff
@@ -71,9 +72,6 @@ jobs:
                 const body = [
                   "翻訳対象:",
                   `- \`${path}\``,
-                  "",
-                  "glossary.ymlに追加した場合は追加内容:",
-                  "- （ここに追記）"
                 ].join("\n");
 
                 await createIssue(title, body, ["new-doc"]);
@@ -97,9 +95,6 @@ jobs:
                   lines.push("");
                 }
                 if (lines.length === 0) lines.push("翻訳対象: なし");
-
-                lines.push("glossary.ymlに追加した場合は追加内容:");
-                lines.push("- （ここに追記）");
 
                 await createIssue(title, lines.join("\n"), ["update"]);
               }
