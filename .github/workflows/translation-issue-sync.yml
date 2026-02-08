@@ -1,0 +1,102 @@
+name: Create Translation Issues
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "upstream/**"
+      - "translation-assets/targets.yml"
+      - "scripts/get-translate-target.py"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  sync-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed files
+        id: diff
+        run: |
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} > /tmp/changed.txt
+          echo "changed<<EOF" >> $GITHUB_OUTPUT
+          cat /tmp/changed.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Compute translation targets
+        run: |
+          python3 scripts/get-translate-target.py --json --out-file /tmp/targets.json
+
+      - name: Create issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const changed = fs.readFileSync('/tmp/changed.txt', 'utf8').trim().split('\n').filter(Boolean);
+            const data = JSON.parse(fs.readFileSync('/tmp/targets.json', 'utf8'));
+
+            const missing = data.missing || [];
+            const outdated = data.outdated || [];
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const shortSha = context.sha.substring(0, 7);
+
+            const targetsChanged = changed.includes('translation-assets/targets.yml');
+            const upstreamChanged = changed.some(p => p.startsWith('upstream/'));
+
+            async function issueExistsByTitle(title) {
+              const q = `repo:${owner}/${repo} is:issue is:open in:title "${title}"`;
+              const res = await github.rest.search.issuesAndPullRequests({ q });
+              return res.data.total_count > 0;
+            }
+
+            async function createIssue(title, body, labels) {
+              await github.rest.issues.create({ owner, repo, title, body, labels });
+            }
+
+            // 1) targets.yml 更新起因: 新たに対象になったドキュメントを1:1で issue
+            if (targetsChanged) {
+              for (const path of missing) {
+                const title = path; // パス表記
+                if (await issueExistsByTitle(title)) continue;
+
+                const body = [
+                  "翻訳対象:",
+                  `- \`${path}\``,
+                  "",
+                  "glossary.ymlに追加した場合は追加内容:",
+                  "- （ここに追記）"
+                ].join("\n");
+
+                await createIssue(title, body, ["new-doc"]);
+              }
+            }
+
+            // 2) upstream 更新起因: 新規追加 + 既存翻訳更新をまとめて1 issue
+            if (upstreamChanged) {
+              const title = `Update upstream: ${shortSha}`;
+              if (!(await issueExistsByTitle(title))) {
+                const lines = [];
+                if (missing.length > 0) {
+                  lines.push("翻訳対象（新規）:");
+                  for (const p of missing) lines.push(`- \`${p}\``);
+                  lines.push("");
+                }
+                if (outdated.length > 0) {
+                  lines.push("翻訳対象（更新）:");
+                  for (const p of outdated) lines.push(`- \`${p}\``);
+                  lines.push("");
+                }
+                if (lines.length === 0) lines.push("翻訳対象: なし");
+
+                lines.push("glossary.ymlに追加した場合は追加内容:");
+                lines.push("- （ここに追記）");
+
+                await createIssue(title, lines.join("\n"), ["update"]);
+              }
+            }

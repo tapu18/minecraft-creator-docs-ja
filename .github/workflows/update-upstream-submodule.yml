@@ -1,0 +1,32 @@
+name: Update Upstream Submodule
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-submodule:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Update submodule
+        run: |
+          git submodule update --remote upstream
+          if git diff --quiet; then
+            echo "No submodule changes"
+            exit 0
+          fi
+          UPSTREAM_SHA=$(git -C upstream rev-parse --short HEAD)
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add upstream
+          git commit -m "Update upstream submodule: ${UPSTREAM_SHA}"
+          git push origin HEAD:main
