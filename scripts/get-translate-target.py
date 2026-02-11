@@ -6,9 +6,10 @@ import fnmatch
 import glob
 import json
 import os
+import subprocess
 import sys
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 
 @dataclass
@@ -122,12 +123,55 @@ def get_include_files(root: str, patterns: List[str]) -> List[str]:
     return results
 
 
+def _get_git_repo_root(path: str) -> Optional[str]:
+    try:
+        result = subprocess.run(
+            ["git", "-C", os.path.dirname(path), "rev-parse", "--show-toplevel"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return result.stdout.strip() or None
+    except Exception:
+        return None
+
+
+def _get_last_commit_ts(path: str, repo_roots: Dict[str, Optional[str]]) -> Optional[int]:
+    directory = os.path.dirname(path)
+    if directory not in repo_roots:
+        repo_roots[directory] = _get_git_repo_root(path)
+
+    repo_root = repo_roots[directory]
+    if not repo_root:
+        return None
+
+    rel_path = os.path.relpath(path, repo_root)
+    try:
+        result = subprocess.run(
+            ["git", "-C", repo_root, "log", "-1", "--format=%ct", "--", rel_path],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except Exception:
+        return None
+
+    output = result.stdout.strip()
+    if not output:
+        return None
+    try:
+        return int(output)
+    except ValueError:
+        return None
+
+
 def find_targets(
     upstream_root: str, output_root: str, include: List[str], exclude: List[str]
 ) -> Tuple[List[str], List[str]]:
     files = get_include_files(upstream_root, include)
     missing: List[str] = []
     outdated: List[str] = []
+    repo_roots: Dict[str, Optional[str]] = {}
 
     for file_path in files:
         relative = os.path.relpath(file_path, upstream_root)
@@ -139,9 +183,15 @@ def find_targets(
             missing.append(_normalize_path(relative))
             continue
 
-        src_mtime = os.path.getmtime(file_path)
-        dst_mtime = os.path.getmtime(translated_path)
-        if src_mtime > dst_mtime:
+        src_ts = _get_last_commit_ts(file_path, repo_roots)
+        dst_ts = _get_last_commit_ts(translated_path, repo_roots)
+
+        if src_ts is None:
+            src_ts = int(os.path.getmtime(file_path))
+        if dst_ts is None:
+            dst_ts = int(os.path.getmtime(translated_path))
+
+        if src_ts > dst_ts:
             outdated.append(_normalize_path(relative))
 
     return sorted(missing), sorted(outdated)
