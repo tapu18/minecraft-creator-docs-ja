@@ -44,3 +44,18 @@ terms:
   Particle emitter:
     target: パーティクルエミッター
     note: パーティクル発生の設定。初期化時にMolangスクリプトが実行される場合がある。
+  fog:
+    target: フォグ
+    note: Minecraftの視界を制御する霧エフェクト
+  biome:
+    target: バイオーム
+    note: Minecraftのバイオームを指す場合に使用
+  render distance:
+    target: 描画距離
+    note: プレイヤーが見渡せる範囲の距離
+  chunk:
+    target: チャンク
+    note: Minecraftのワールドを構成する16×16ブロックの単位
+  command:
+    target: コマンド
+    note: Minecraftのコマンドラインコマンド

@@ -11,3 +11,5 @@ entries:
     title_ja: 実践 Molang
   - path: /creator/Documents/molang/syntax-guide.md
     title_ja: Molang 構文ガイド
+  - path: /creator/Documents/Fogs/FogsIntroduction.md
+    title_ja: Fog JSON とフォグの概要
