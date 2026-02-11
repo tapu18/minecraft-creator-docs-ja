@@ -50,8 +50,8 @@ jobs:
             const repo = context.repo.repo;
             const shortSha = context.sha.substring(0, 7);
 
-            const targetsChanged = changed.includes('translation-assets/targets.yml');
             const upstreamChanged = changed.some(p => p.startsWith('upstream/'));
+            const localChanged = changed.some(p => !p.startsWith('upstream/'));
 
             async function issueExistsByTitle(title) {
               const q = `repo:${owner}/${repo} is:issue is:open in:title "${title}"`;
@@ -63,31 +63,39 @@ jobs:
               await github.rest.issues.create({ owner, repo, title, body, labels });
             }
 
-            // 1) 新規ドキュメントがある場合: 1:1で issue を作成
-            if (missing.length > 0) {
-              for (const path of missing) {
-                const title = path; // パス表記
-                if (await issueExistsByTitle(title)) continue;
+            // 1) target やその他こちら側の更新がトリガー: 1:1で issue を作成
+            if (localChanged) {
+              const individualTargets = Array.from(new Set([...missing, ...outdated]));
+              if (individualTargets.length > 0) {
+                for (const path of individualTargets) {
+                  const title = path; // パス表記
+                  if (await issueExistsByTitle(title)) continue;
 
-                const body = [
-                  "翻訳対象:",
-                  `- \`${path}\``,
-                ].join("\n");
+                  const body = [
+                    "翻訳対象:",
+                    `- \`${path}\``,
+                  ].join("\n");
 
-                await createIssue(title, body, ["new-doc"]);
+                  await createIssue(title, body, ["new-doc", "ai"]);
+                }
               }
+              else console.log("No translation targets to create individual issues.");
             }
-            else console.log("No new documents to translate.");
+            // 2) upstream の更新がトリガー（upstreamのみ変更）: まとめて1 issue を作成
+            else if (upstreamChanged) {
+              const groupedTargets = Array.from(new Set([...missing, ...outdated]));
+              if (groupedTargets.length > 0) {
+                const title = `Update upstream: ${shortSha}`;
+                if (!(await issueExistsByTitle(title))) {
+                  const lines = [];
+                  lines.push("翻訳対象（更新）:");
+                  for (const p of groupedTargets) lines.push(`- \`${p}\``);
 
-            // 2) 既存翻訳の更新がある場合: まとめて1 issue を作成
-            if (outdated.length > 0) {
-              const title = `Update upstream: ${shortSha}`;
-              if (!(await issueExistsByTitle(title))) {
-                const lines = [];
-                lines.push("翻訳対象（更新）:");
-                for (const p of outdated) lines.push(`- \`${p}\``);
-
-                await createIssue(title, lines.join("\n"), ["update"]);
+                  await createIssue(title, lines.join("\n"), ["update", "ai"]);
+                }
               }
+              else console.log("No translation targets to update.");
             }
-            else console.log("No outdated documents to update.");
+            else {
+              console.log("No relevant trigger for issue creation.");
+            }
