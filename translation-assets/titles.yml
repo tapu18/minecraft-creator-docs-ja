@@ -13,3 +13,5 @@ entries:
     title_ja: Molang 構文ガイド
   - path: /creator/Documents/Fogs/FogsIntroduction.md
     title_ja: Fog JSON とフォグの概要
+  - path: /creator/Documents/Biomes/BiomeOverview.md
+    title_ja: バイオーム JSON と概要
