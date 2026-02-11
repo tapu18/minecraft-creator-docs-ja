@@ -70,4 +70,4 @@ terms:
     note: Minecraftのコマンドラインコマンド
   ambience:
     target: 雰囲気
-    note: 環境の雰囲気や雰囲気演出
+    note: 環境の雰囲気演出。音響効果を指す場合はアンビエントサウンドと表記
