@@ -56,18 +56,6 @@ terms:
   chunk:
     target: チャンク
     note: Minecraftのワールドを構成する16×16ブロックの単位
-  player:
-    target: プレイヤー
-    note: ゲームをプレイしているユーザー
-  stack:
-    target: スタック
-    note: データ構造のスタック
-  layer:
-    target: レイヤー
-    note: 階層または層
   command:
     target: コマンド
     note: Minecraftのコマンドラインコマンド
-  ambience:
-    target: 雰囲気
-    note: 環境の雰囲気演出。音響効果を指す場合はアンビエントサウンドと表記
