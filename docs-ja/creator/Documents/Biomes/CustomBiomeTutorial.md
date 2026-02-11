@@ -302,7 +302,39 @@ ms.date: 01/20/2025
 }
 ```
 
-また、`glowing_mushroom_rule.json` の例も示しています（原文参照）。
+以下は `glowing_mushroom_rule.json` の例です。
+
+```json
+{
+  "format_version": "1.21.40",
+  "minecraft:feature_rules": {
+    "description": {
+      "identifier": "custom:glowing_mushroom_rule",
+      "places_feature": "custom:glowing_mushroom"
+    },
+    "conditions": {
+      "placement_pass": "surface_pass",
+      "minecraft:biome_filter": {
+        "test": "has_biome_tag",
+        "operator": "==",
+        "value": "crystal_caverns"
+      }
+    },
+    "distribution": {
+      "iterations": 3,
+      "x": {
+        "distribution": "uniform",
+        "extent": [0, 15]
+      },
+      "y": "query.heightmap(variable.worldx, variable.worldz)",
+      "z": {
+        "distribution": "uniform",
+        "extent": [0, 15]
+      }
+    }
+  }
+}
+```
 
 ### バイオーム固有のスポーン設定
 
