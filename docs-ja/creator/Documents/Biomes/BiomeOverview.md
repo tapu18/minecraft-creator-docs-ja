@@ -1,4 +1,3 @@
-````markdown
 ---
 author: mammerla
 ms.author: mikeam
@@ -184,5 +183,3 @@ Minecraft のバイオームは、地形の特徴がまったく異なる場合�
 - [Partial Biome Replacements](../Biomes/CustomPartialBiomeReplacement.md)
 - [Client Biomes](./../../Reference/Content/ClientBiomesReference/Examples/ClientBiomesOverview.md)
 - [Features](../FeaturesTaxonomy.md)
-
-````
