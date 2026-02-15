@@ -42,6 +42,7 @@ ms.date: 01/20/2025
 <a id="manifest-files"></a>
 ## マニフェストファイル
 
+<a id="behavior-pack-manifest"></a>
 ### ビヘイビアパックのマニフェスト
 
 （以下のJSONはそのまま使用します）
@@ -72,6 +73,7 @@ ms.date: 01/20/2025
 }
 ```
 
+<a id="resource-pack-manifest"></a>
 ### リソースパックのマニフェスト
 
 （以下のJSONはそのまま使用します）
