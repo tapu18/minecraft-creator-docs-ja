@@ -15,3 +15,5 @@ entries:
     title_ja: Fog JSON とフォグの概要
   - path: /creator/Documents/Biomes/BiomeOverview.md
     title_ja: バイオーム JSON と概要
+  - path: /creator/Documents/Biomes/CustomBiomeTutorial.md
+    title_ja: カスタムバイオームチュートリアル
